@@ -156,7 +156,7 @@
                     <configuration>
                         <suiteXmlFiles>
                             <!-- Call Suite name -->
-                            <suiteXmlFile>src/test/resources/suites/Suite_Bai27_AllureReport.xml</suiteXmlFile>
+                            <suiteXmlFile>src/test/resources/suites/SuiteAll.xml</suiteXmlFile>
                         </suiteXmlFiles>
                         <argLine>
                             -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/1.9.24/aspectjweaver-1.9.24.jar"
