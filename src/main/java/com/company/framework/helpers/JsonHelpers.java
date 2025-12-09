@@ -1,6 +1,7 @@
 package com.company.framework.helpers;
 
 import com.company.framework.constants.ConfigData;
+import com.company.framework.utils.LogUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -26,10 +27,10 @@ public class JsonHelpers {
             }
 
             value = node.asText();
-            System.out.println("Value: " + value);
+            LogUtils.info("[JsonHelpers] Value: " + value);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.error("[JsonHelpers] Error reading JSON file: " + e.getMessage());
         }
 
         return value;
@@ -48,10 +49,10 @@ public class JsonHelpers {
             }
 
             value = node.asText();
-            System.out.println("Value: " + value);
+            LogUtils.info("[JsonHelpers] Value: " + value);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LogUtils.error("[JsonHelpers] Error reading JSON file: " + e.getMessage());
         }
 
         return value;
@@ -116,74 +117,65 @@ public class JsonHelpers {
     }
 
     public static void updateValueJsonObject(String keyName, Number value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             //Update value if exist key
             jsonObject.addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(ConfigData.JSON_DATA_FILE_PATH);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
-
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject(String keyName, String value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             if (jsonObject.has(keyName)) {
-                System.out.println("🔁 Update key: '" + keyName + "'");
+                LogUtils.info("[JsonHelpers] 🔁 Update key: '" + keyName + "'");
             } else {
-                System.out.println("➕ Add new key: '" + keyName + "'");
+                LogUtils.info("[JsonHelpers] ➕ Add new key: '" + keyName + "'");
             }
 
             //Update value if exist key
             jsonObject.addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(ConfigData.JSON_DATA_FILE_PATH);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
-
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject(String parentKey, String keyName, Number value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo parentKey tồn tại
             if (!jsonObject.has(parentKey) || !jsonObject.get(parentKey).isJsonObject()) {
@@ -193,28 +185,26 @@ public class JsonHelpers {
             //Update value if exist key
             jsonObject.getAsJsonObject(parentKey).addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(ConfigData.JSON_DATA_FILE_PATH);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject(String parentKey, String keyName, String value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(ConfigData.JSON_DATA_FILE_PATH))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo parentKey tồn tại
             if (!jsonObject.has(parentKey) || !jsonObject.get(parentKey).isJsonObject()) {
@@ -224,28 +214,26 @@ public class JsonHelpers {
             // Gán keyName vào object con
             jsonObject.getAsJsonObject(parentKey).addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(ConfigData.JSON_DATA_FILE_PATH);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject_FilePath(String filePath, String keyName, String value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(filePath));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo keyName tồn tại
             if (!jsonObject.has(keyName) || !jsonObject.get(keyName).isJsonObject()) {
@@ -255,31 +243,26 @@ public class JsonHelpers {
             //Update value if exist key
             jsonObject.addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to new file
             File jsonFile = new File(filePath);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-
-            //Close reader
-            reader.close();
-
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject_FilePath(String filePath, String keyName, Number value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(filePath));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo parentKey tồn tại
             if (!jsonObject.has(keyName) || !jsonObject.get(keyName).isJsonObject()) {
@@ -289,31 +272,26 @@ public class JsonHelpers {
             //Update value if exist key
             jsonObject.addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to new file
             File jsonFile = new File(filePath);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-
-            //Close reader
-            reader.close();
-
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject_FilePath(String filePath, String parentKey, String keyName, String value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(filePath));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo parentKey tồn tại
             if (!jsonObject.has(parentKey) || !jsonObject.get(parentKey).isJsonObject()) {
@@ -323,28 +301,26 @@ public class JsonHelpers {
             //Update value if exist key
             jsonObject.getAsJsonObject(parentKey).addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(filePath);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
     public static void updateValueJsonObject_FilePath(String filePath, String parentKey, String keyName, Number value) {
-        Reader reader;
-        try {
-            reader = Files.newBufferedReader(Paths.get(filePath));
-
+        try (Reader reader = Files.newBufferedReader(Paths.get(filePath))) {
             Gson gson = new Gson();
             //Convert Json file to Json Object
             JsonObject jsonObject = gson.fromJson(reader, JsonObject.class);
-            System.out.println("Original JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Original JSON: " + jsonObject);
 
             // Đảm bảo parentKey tồn tại
             if (!jsonObject.has(parentKey) || !jsonObject.get(parentKey).isJsonObject()) {
@@ -354,16 +330,17 @@ public class JsonHelpers {
             //Update value if exist key
             jsonObject.getAsJsonObject(parentKey).addProperty(keyName, value);
 
-            System.out.println("Modified JSON: " + jsonObject);
+            LogUtils.info("[JsonHelpers] Modified JSON: " + jsonObject);
 
             //Store new Json data to file
             File jsonFile = new File(filePath);
-            OutputStream outputStream = new FileOutputStream(jsonFile);
-            outputStream.write(gson.toJson(jsonObject).getBytes());
-            outputStream.flush();
-            reader.close();
+            try (OutputStream outputStream = new FileOutputStream(jsonFile)) {
+                outputStream.write(gson.toJson(jsonObject).getBytes());
+                outputStream.flush();
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            LogUtils.error("[JsonHelpers] Error updating JSON value: " + e.getMessage());
+            throw new RuntimeException("Error updating JSON value", e);
         }
     }
 
@@ -401,7 +378,7 @@ public class JsonHelpers {
                 outputStream.flush();
             }
 
-            System.out.println("✅ Updated index " + index + ": " + String.join(" → ", keys) + " = " + value);
+            LogUtils.info("[JsonHelpers] ✅ Updated index " + index + ": " + String.join(" → ", keys) + " = " + value);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -442,7 +419,7 @@ public class JsonHelpers {
                 outputStream.flush();
             }
 
-            System.out.println("✅ Updated index " + index + ": " + String.join(" → ", keys) + " = " + value);
+            LogUtils.info("[JsonHelpers] ✅ Updated index " + index + ": " + String.join(" → ", keys) + " = " + value);
 
         } catch (IOException e) {
             throw new RuntimeException(e);

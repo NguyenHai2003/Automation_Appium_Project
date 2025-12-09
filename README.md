@@ -2,9 +2,12 @@
 
 ## 📝 Giới Thiệu
 
-Mobile Test Automation with Appium Java - support multiple platform
+Mobile Test Automation Framework với Appium Java - Hỗ trợ đầy đủ cho **Native App**, **Hybrid App** và **Mobile Web**.
+
+Framework được thiết kế với cấu trúc rõ ràng, dễ hiểu cho người mới, với sự phân tách riêng biệt cho từng loại ứng dụng.
 
 ## 🚀 Công Nghệ Chính
+
 - Appium 3.x.x
 - Selenium 4.x.x
 - Maven
@@ -12,51 +15,107 @@ Mobile Test Automation with Appium Java - support multiple platform
 - Java >= 17
 - appium_flutterfinder_java
 - Properties, JSON, Excel
-- Extent Report, Allure Report
-- Log4j, Slf4j
+- Allure Report
+- Log4j2
 - Multi-Threading, Parallel Testing
 - Keyword Driven Testing
 - Data Driven Testing
 
 ---
 
+## 🎯 Hỗ Trợ 3 Loại Ứng Dụng
+
+### ✅ Native App
+
+- Android Native Apps (UiAutomator2)
+- iOS Native Apps (XCUITest)
+- Flutter Apps
+
+### ✅ Hybrid App
+
+- Apps kết hợp Native và WebView
+- Context switching tự động
+- Hỗ trợ cả Native và WebView elements
+
+### ✅ Mobile Web
+
+- Chrome Mobile (Android)
+- Safari Mobile (iOS)
+- Browser navigation và interactions
+
+---
+
 ## 🏗️ Cấu Trúc Dự Án
 
+### 1. 📂 Framework Core (`src/main/java/com/company/framework/`)
 
-### 1. 📂 `src/main/java/com.company.framework` (Logic Nền tảng)
+| Thư mục             | Mục đích                                              |
+| :------------------ | :---------------------------------------------------- |
+| `enums/`            | Định nghĩa **Platform**, **AppType**, **BrowserType** |
+| `drivers/`          | Quản lý Driver với Factory Pattern                    |
+| `drivers/manager/`  | Quản lý Appium Server                                 |
+| `drivers/factory/`  | Factory để tạo Driver và Options                      |
+| `helpers/`          | Helper classes chung                                  |
+| `helpers/webview/`  | **WebViewHelper** - Context switching cho Hybrid App  |
+| `helpers/browser/`  | **BrowserHelper** - Navigation cho Mobile Web         |
+| `keywords/`         | Keywords cho từng loại app                            |
+| `keywords/nativeapp/`  | **NativeUI** - Keywords cho Native App                |
+| `keywords/webview/` | **WebViewUI** - Keywords cho WebView                  |
+| `keywords/browser/` | **BrowserUI** - Keywords cho Mobile Web               |
+| `reports/`          | Allure Report integration                             |
+| `utils/`            | Utilities (Logging, Date, etc.)                       |
 
-| Thư mục | Mục đích |
-| :--- | :--- |
-| `constants` | Định nghĩa các **Hằng số** chung (Thời gian chờ, thông tin mặc định). |
-| `drivers` | Quản lý **Appium Driver** (khởi tạo, đóng, quản lý phiên). |
-| `helpers` | Chứa các hàm hỗ trợ chung cho các tác vụ không phải Appium (ví dụ: thao tác chuỗi). |
-| `keywords` | Định nghĩa các **Từ khóa hành động mức cao** được sử dụng lại bởi các Page Objects. |
-| `reports` | Các lớp hỗ trợ tích hợp báo cáo Allure. |
-| `utils` | Các lớp tiện ích. |
+### 2. 🧪 Test Code (`src/test/java/com/company/test/`)
 
-### 2. 🧪 `src/test/java/com.company.test` (Logic Kiểm thử)
+| Thư mục          | Mục đích                                         |
+| :--------------- | :----------------------------------------------- |
+| `common/native/` | **BaseTestNativeApp** - Base test cho Native App |
+| `common/hybrid/` | **BaseTestHybridApp** - Base test cho Hybrid App |
+| `common/web/`    | **BaseTestMobileWeb** - Base test cho Mobile Web |
+| `pages/native/`  | **BasePageNative** - Base page cho Native App    |
+| `pages/hybrid/`  | **BasePageHybrid** - Base page cho Hybrid App    |
+| `pages/web/`     | **BasePageWeb** - Base page cho Mobile Web       |
+| `testcases/`     | Test cases (tổ chức theo loại app)               |
+| `listeners/`     | TestNG Listeners                                 |
 
-| Thư mục | Mục đích |
-| :--- | :--- |
-| `common` | **Base Test Class** cho việc thiết lập và dọn dẹp môi trường TestNG. |
-| `listeners` | Triển khai **TestNG Listeners** (ví dụ: `TestListener`) để xử lý các sự kiện kiểm thử (thành công, thất bại). |
-| `pages` | Triển khai **Page Object Model (POM)**. Mỗi lớp tương ứng với một màn hình/trang trong ứng dụng, chứa các **Element Locators** và **Phương thức hành động** trên trang đó. |
-| `testcases` | Chứa các **Test Cases** thực tế sử dụng các Page Objects để tạo thành kịch bản kiểm thử. |
+### 3. 📁 Resources (`src/test/resources/`)
 
-### 3. 📁 `src/test/resources` (Tài nguyên Kiểm thử)
+| Thư mục     | Mục đích                        |
+| :---------- | :------------------------------ |
+| `configs/`  | Cấu hình môi trường và thiết bị |
+| `suites/`   | TestNG XML suites               |
+| `testdata/` | Test data (Excel, JSON)         |
 
-| Thư mục | Mục đích |
-| :--- | :--- |
-| `configs` | Tệp cấu hình **môi trường** và **thiết bị** . |
-| `suites` | Các tệp **TestNG XML** để nhóm và chạy các bộ kiểm thử khác nhau. |
-| `testdata` | Chứa **Dữ liệu kiểm thử** bên ngoài (Excel, JSON). |
+---
+
+## 📚 Tài Liệu Chi Tiết
+
+### 📖 Các Tài Liệu Hướng Dẫn
+
+1. **`STRUCTURE_GUIDE.md`** - Hướng dẫn cấu trúc framework:
+
+    - Cấu trúc framework đầy đủ
+    - Cách sử dụng từng component
+    - Best practices
+    - Troubleshooting
+
+2. **`PROJECT_SETUP_GUIDE.md`** - Hướng dẫn áp dụng framework vào dự án mới:
+    - ✅ Những gì **KHÔNG CẦN** thay đổi (Core Framework)
+    - 🔧 Những gì **CẦN CUSTOMIZE** (Project-specific)
+    - Quy trình setup dự án mới
+    - Ví dụ cụ thể cho từng loại app
 
 ---
 
 ## ▶️ Cách Thực Thi
 
-Khung này sử dụng **Maven** để quản lý việc xây dựng và thực thi kiểm thử.
+1. Đảm bảo **Appium Server** đang chạy (hoặc để framework tự khởi động)
+2. Thiết lập **thiết bị ảo (Emulator/Simulator)** hoặc **thiết bị thực**
+3. Cấu hình thông tin trong `src/test/resources/configs/`
+4. Chạy test với Maven: `mvn test`
 
-* Đảm bảo **Appium Server** đang chạy.
-* Thiết lập **thiết bị ảo (Emulator/Simulator)** hoặc **thiết bị thực** và đảm bảo có thể kết nối.
-* Cấu hình thông tin kết nối và thiết bị trong tệp **`src/test/resources/configs`**.
+---
+
+## 📖 Ví Dụ TestNG XML
+
+Xem `STRUCTURE_GUIDE.md` để biết cách cấu hình TestNG XML cho từng loại app.
