@@ -4,6 +4,7 @@ import com.company.framework.constants.ConfigData;
 import com.company.framework.drivers.DriverManager;
 import com.company.framework.drivers.factory.DriverFactory;
 import com.company.framework.drivers.manager.AppiumServerManager;
+import com.company.framework.drivers.manager.ChromeDriverManager;
 import com.company.framework.enums.BrowserType;
 import com.company.framework.enums.Platform;
 import com.company.framework.utils.LogUtils;
@@ -67,6 +68,45 @@ public class BaseTestMobileWeb {
                 browser = BrowserType.fromString(browserType);
             } catch (IllegalArgumentException e) {
                 LogUtils.warn("⚠️ Invalid browser type: " + browserType + ", using default: Chrome");
+            }
+        }
+
+        // Tự động setup ChromeDriver nếu được bật trong config và sử dụng Chrome browser
+        // Với Appium mobile web, ChromeDriver thường được Appium tự động quản lý
+        // Nhưng setup trước sẽ đảm bảo driver đã sẵn sàng
+        if (browser == BrowserType.CHROME && platform == Platform.ANDROID) {
+            boolean autoSetup = ConfigData.AUTO_SETUP_CHROMEDRIVER != null &&
+                    ConfigData.AUTO_SETUP_CHROMEDRIVER.trim().equalsIgnoreCase("true");
+
+            if (autoSetup) {
+                try {
+                    LogUtils.info("🔧 Đang tự động setup ChromeDriver phù hợp với thiết bị...");
+
+                    String driverVersion = ConfigData.CHROMEDRIVER_VERSION;
+                    String browserVersion = ConfigData.CHROME_BROWSER_VERSION;
+
+                    if (driverVersion != null && !driverVersion.trim().isEmpty()) {
+                        // Setup với driver version cụ thể
+                        ChromeDriverManager.setupChromeDriver(driverVersion.trim());
+                    } else if (browserVersion != null && !browserVersion.trim().isEmpty()) {
+                        // Setup với browser version cụ thể
+                        ChromeDriverManager.setupChromeDriverForChromeVersion(browserVersion.trim());
+                    } else {
+                        // Auto-detect và setup
+                        ChromeDriverManager.setupChromeDriver();
+                    }
+
+                    String driverPath = ChromeDriverManager.getChromeDriverPath();
+                    if (driverPath != null) {
+                        LogUtils.info("📁 ChromeDriver path: " + driverPath);
+                    }
+                    LogUtils.info("✅ ChromeDriver đã được setup tự động");
+                } catch (Exception e) {
+                    LogUtils.warn("⚠️ Không thể setup ChromeDriver tự động: " + e.getMessage());
+                    LogUtils.info("ℹ️ Appium sẽ tự động quản lý ChromeDriver");
+                }
+            } else {
+                LogUtils.info("ℹ️ Auto setup ChromeDriver đã được tắt trong config. Appium sẽ tự động quản lý.");
             }
         }
 

@@ -7,6 +7,7 @@ import com.company.framework.reports.AllureManager;
 import com.company.framework.utils.LogUtils;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -123,6 +124,22 @@ public class BrowserUI {
         String text = element.getText();
         AllureManager.saveTextLog("➡️ TEXT: " + text);
         return text;
+    }
+
+    /**
+     * Gửi phím (keys) vào element trong browser
+     * Có thể dùng để gửi Keys.ENTER, Keys.TAB, v.v.
+     */
+    @Step("Send keys '{1}' to element {0}")
+    public static void sendKeys(By locator, CharSequence... keys) {
+        sleep(STEP_ACTION_TIMEOUT);
+        LogUtils.info("[BrowserUI] Sending keys to element: " + locator);
+        if (ConfigData.SCREENSHOT_ALL_STEP.equalsIgnoreCase("true")) {
+            AllureManager.saveScreenshotPNG();
+        }
+        WebElement element = waitForElementVisible(locator);
+        element.sendKeys(keys);
+        LogUtils.info("[BrowserUI] Keys sent successfully");
     }
 
     /**

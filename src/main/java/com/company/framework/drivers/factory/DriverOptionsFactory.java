@@ -54,6 +54,9 @@ public class DriverOptionsFactory {
 
         // Note: autoGrantPermissions is handled via capabilities if needed
         // UiAutomator2Options doesn't have setAutoGrantPermissionsEnabled method
+        if (autoGrantPermissions) {
+            options.setCapability("autoGrantPermissions", true);
+        }
 
         if (systemPort != null && !systemPort.isEmpty()) {
             options.setSystemPort(Integer.parseInt(systemPort));
