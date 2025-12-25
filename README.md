@@ -115,7 +115,3 @@ Framework được thiết kế với cấu trúc rõ ràng, dễ hiểu cho ng�
 4. Chạy test với Maven: `mvn test`
 
 ---
-
-## 📖 Ví Dụ TestNG XML
-
-Xem `STRUCTURE_GUIDE.md` để biết cách cấu hình TestNG XML cho từng loại app.
