@@ -14,11 +14,7 @@ import java.time.Duration;
  * Quản lý Appium Server - khởi động và dừng server
  */
 public class AppiumServerManager {
-    /**
-     * -- GETTER --
-     *  Lấy instance của service hiện tại
-     *
-     */
+
     @Getter
     private static AppiumDriverLocalService service;
     private static String currentHost;
@@ -50,7 +46,6 @@ public class AppiumServerManager {
 
         int timeoutService = Integer.parseInt(ConfigData.TIMEOUT_SERVICE);
 
-        // Kill process on port nếu có
         SystemHelpers.killProcessOnPort(port);
 
         // Build the Appium service
@@ -89,11 +84,6 @@ public class AppiumServerManager {
         }
     }
 
-    /**
-     * Kiểm tra xem server có đang chạy không
-     *
-     * @return true nếu server đang chạy
-     */
     public static boolean isServerRunning() {
         return service != null && service.isRunning();
     }

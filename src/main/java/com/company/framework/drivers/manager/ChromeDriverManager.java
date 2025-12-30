@@ -78,14 +78,11 @@ public class ChromeDriverManager {
 
     /**
      * Clear cache của WebDriverManager (xóa các driver đã tải)
-     * Note: WebDriverManager 5.x không có clearCache() method
      * Có thể xóa thủ công cache folder nếu cần
      */
     public static void clearCache() {
         try {
             LogUtils.info("🧹 Đang xóa cache của WebDriverManager...");
-            // WebDriverManager 5.x không có clearCache() method
-            // Cache được lưu tại: ~/.cache/selenium hoặc %LOCALAPPDATA%\selenium
             LogUtils.info("ℹ️ Để xóa cache, vui lòng xóa thủ công folder: ~/.cache/selenium (Linux/Mac) hoặc %LOCALAPPDATA%\\selenium (Windows)");
             LogUtils.info("✅ Cache info đã được hiển thị");
         } catch (Exception e) {

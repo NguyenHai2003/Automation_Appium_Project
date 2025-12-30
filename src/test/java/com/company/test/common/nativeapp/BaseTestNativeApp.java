@@ -17,48 +17,106 @@ import java.time.Duration;
 /**
  * BaseTest cho Native App testing
  * Sử dụng cho Native App (Android/iOS native apps)
- *
- * Ví dụ sử dụng:
- * <pre>
- * public class MyNativeTest extends BaseTestNativeApp {
- *     @Test
- *     public void testNativeFeature() {
- *         // Test code here
- *     }
- * }
- * </pre>
  */
 public class BaseTestNativeApp {
 
     /**
      * Setup driver cho Native App
+     * Nếu deviceConfigName được cung cấp, sẽ đọc config từ device.json
+     * Nếu không, sẽ sử dụng các parameters truyền vào từ TestNG
      */
     @BeforeMethod(alwaysRun = true)
     @Parameters({
             "platformName", "platformVersion", "deviceName", "udid",
             "automationName", "appPackage", "appActivity", "appPath",
             "noReset", "fullReset", "autoGrantPermissions",
-            "host", "port", "bundleId", "wdaLocalPort", "systemPort"
+            "host", "port", "bundleId", "wdaLocalPort", "systemPort",
+            "deviceConfigName"
     })
     public void setUpDriver(
-            String platformName,
-            String platformVersion,
-            String deviceName,
+            @Optional String platformName,
+            @Optional String platformVersion,
+            @Optional String deviceName,
             @Optional String udid,
             @Optional String automationName,
             @Optional String appPackage,
             @Optional String appActivity,
             @Optional String appPath,
-            boolean noReset,
-            boolean fullReset,
-            boolean autoGrantPermissions,
+            @Optional String noReset,
+            @Optional String fullReset,
+            @Optional String autoGrantPermissions,
             String host,
             String port,
             @Optional String bundleId,
             @Optional String wdaLocalPort,
-            @Optional String systemPort) {
+            @Optional String systemPort,
+            @Optional String deviceConfigName) {
 
         LogUtils.info("🚀 Setting up Native App driver...");
+
+        String finalPlatformName;
+        String finalPlatformVersion;
+        String finalDeviceName;
+        String finalAutomationName;
+        String finalAppPackage;
+        String finalAppActivity;
+        String finalAppPath;
+        boolean finalNoReset;
+        boolean finalFullReset;
+        boolean finalAutoGrantPermissions;
+
+        // Nếu có deviceConfigName, đọc config từ device.json
+        if (deviceConfigName != null && !deviceConfigName.trim().isEmpty()) {
+            LogUtils.info("📋 Loading device configuration from device.json: " + deviceConfigName);
+
+            // Xác định platform (nếu không có trong parameter, thử lấy từ JSON hoặc default là "android")
+            if (platformName == null || platformName.trim().isEmpty()) {
+                // Thử đọc từ JSON, nếu không có thì default
+                try {
+                    finalPlatformName = ConfigData.getValueJsonConfig("android", deviceConfigName, "platformName");
+                    if (finalPlatformName == null || finalPlatformName.trim().isEmpty()) {
+                        finalPlatformName = "Android";
+                    }
+                } catch (Exception e) {
+                    finalPlatformName = "Android";
+                }
+            } else {
+                finalPlatformName = platformName;
+            }
+
+            String platformKey = finalPlatformName.toLowerCase();
+
+            // Đọc các config từ device.json
+            finalPlatformVersion = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "platformVersion");
+            finalDeviceName = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "deviceName");
+            finalAutomationName = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "automationName");
+            finalAppPackage = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "appPackage");
+            finalAppActivity = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "appActivity");
+
+            // Handle appPath - có thể là appAndroidPath hoặc appPath trong JSON
+            String appAndroidPath = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "appAndroidPath");
+            String appIOSPath = ConfigData.getValueJsonConfig(platformKey, deviceConfigName, "appPath");
+            finalAppPath = (appAndroidPath != null && !appAndroidPath.trim().isEmpty()) ? appAndroidPath : appIOSPath;
+
+            finalNoReset = ConfigData.getBooleanValueJsonConfig(platformKey, deviceConfigName, "noReset");
+            finalFullReset = ConfigData.getBooleanValueJsonConfig(platformKey, deviceConfigName, "fullReset");
+            finalAutoGrantPermissions = ConfigData.getBooleanValueJsonConfig(platformKey, deviceConfigName, "autoGrantPermissions");
+
+            LogUtils.info("✅ Loaded device config from device.json");
+        } else {
+            // Sử dụng parameters từ TestNG (backward compatibility)
+            LogUtils.info("📋 Using parameters from TestNG suite");
+            finalPlatformName = platformName;
+            finalPlatformVersion = platformVersion;
+            finalDeviceName = deviceName;
+            finalAutomationName = automationName;
+            finalAppPackage = appPackage;
+            finalAppActivity = appActivity;
+            finalAppPath = appPath;
+            finalNoReset = (noReset != null && !noReset.trim().isEmpty()) ? Boolean.parseBoolean(noReset) : false;
+            finalFullReset = (fullReset != null && !fullReset.trim().isEmpty()) ? Boolean.parseBoolean(fullReset) : false;
+            finalAutoGrantPermissions = (autoGrantPermissions != null && !autoGrantPermissions.trim().isEmpty()) ? Boolean.parseBoolean(autoGrantPermissions) : false;
+        }
 
         // Khởi động Appium server nếu cần
         if (ConfigData.APPIUM_DRIVER_LOCAL_SERVICE.trim().equalsIgnoreCase("true")) {
@@ -66,20 +124,20 @@ public class BaseTestNativeApp {
         }
 
         // Parse platform
-        Platform platform = Platform.fromString(platformName);
+        Platform platform = Platform.fromString(finalPlatformName);
 
         // Tạo driver config
         DriverFactory.DriverConfig config = new DriverFactory.DriverConfig();
-        config.platformVersion = platformVersion;
-        config.deviceName = deviceName;
+        config.platformVersion = finalPlatformVersion;
+        config.deviceName = finalDeviceName;
         config.udid = udid;
-        config.automationName = automationName;
-        config.appPackage = appPackage;
-        config.appActivity = appActivity;
-        config.appPath = appPath;
-        config.noReset = noReset;
-        config.fullReset = fullReset;
-        config.autoGrantPermissions = autoGrantPermissions;
+        config.automationName = finalAutomationName;
+        config.appPackage = finalAppPackage;
+        config.appActivity = finalAppActivity;
+        config.appPath = finalAppPath;
+        config.noReset = finalNoReset;
+        config.fullReset = finalFullReset;
+        config.autoGrantPermissions = finalAutoGrantPermissions;
         config.systemPort = systemPort;
         config.wdaLocalPort = wdaLocalPort;
         config.bundleId = bundleId;

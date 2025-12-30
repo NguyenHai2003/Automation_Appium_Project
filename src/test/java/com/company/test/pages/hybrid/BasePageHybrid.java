@@ -12,22 +12,6 @@ import org.openqa.selenium.support.PageFactory;
 /**
  * BasePage cho Hybrid App
  * Sử dụng cho Hybrid App pages (kết hợp Native và WebView)
- *
- * Ví dụ:
- * <pre>
- * public class LoginPageHybrid extends BasePageHybrid {
- *     // Native element
- *     @AndroidFindBy(id = "nativeButton")
- *     private WebElement nativeButton;
- *
- *     // Method để switch sang WebView và tương tác
- *     public void interactWithWebView() {
- *         WebViewHelper.switchToWebView(null);
- *         // WebView interactions here
- *         WebViewHelper.switchToNativeContext();
- *     }
- * }
- * </pre>
  */
 public class BasePageHybrid {
 

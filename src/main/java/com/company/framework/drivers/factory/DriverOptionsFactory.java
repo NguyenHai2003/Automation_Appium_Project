@@ -52,8 +52,6 @@ public class DriverOptionsFactory {
         options.setNoReset(noReset);
         options.setFullReset(fullReset);
 
-        // Note: autoGrantPermissions is handled via capabilities if needed
-        // UiAutomator2Options doesn't have setAutoGrantPermissionsEnabled method
         if (autoGrantPermissions) {
             options.setCapability("autoGrantPermissions", true);
         }

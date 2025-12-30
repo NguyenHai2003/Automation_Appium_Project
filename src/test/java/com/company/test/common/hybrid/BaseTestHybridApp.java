@@ -18,21 +18,6 @@ import java.time.Duration;
 /**
  * BaseTest cho Hybrid App testing
  * Sử dụng cho Hybrid App (kết hợp Native và WebView)
- *
- * Ví dụ sử dụng:
- * <pre>
- * public class MyHybridTest extends BaseTestHybridApp {
- *     @Test
- *     public void testHybridFeature() {
- *         // Test native part
- *         // Switch to WebView
- *         WebViewHelper.switchToWebView(null);
- *         // Test WebView part
- *         // Switch back to native
- *         WebViewHelper.switchToNativeContext();
- *     }
- * }
- * </pre>
  */
 public class BaseTestHybridApp {
 

@@ -10,19 +10,6 @@ import org.openqa.selenium.support.PageFactory;
 /**
  * BasePage cho Native App
  * Sử dụng cho Native App pages
- *
- * Ví dụ:
- * <pre>
- * public class LoginPageNative extends BasePageNative {
- *     @AndroidFindBy(id = "loginButton")
- *     @iOSXCUITFindBy(accessibility = "Login Button")
- *     private WebElement loginButton;
- *
- *     public void clickLogin() {
- *         loginButton.click();
- *     }
- * }
- * </pre>
  */
 public class BasePageNative {
 

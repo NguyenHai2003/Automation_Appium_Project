@@ -19,6 +19,9 @@ public class ConfigData {
         PropertiesHelpers.loadAllFiles();
     }
 
+    private static JsonNode rootNode;
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     public static final String PROJECT_PATH = SystemHelpers.getCurrentDir();
     public static final String EXCEL_DATA_FILE_PATH = PropertiesHelpers.getValue("EXCEL_DATA_FILE_PATH");
     public static final String JSON_DATA_FILE_PATH = PropertiesHelpers.getValue("JSON_DATA_FILE_PATH");
@@ -40,27 +43,52 @@ public class ConfigData {
     public static final String CHROME_BROWSER_VERSION = PropertiesHelpers.getValue("CHROME_BROWSER_VERSION");
 
 
-    public static String getValueJsonConfig(String platform, String device, String propertyName) {
-        // Initialize Jackson ObjectMapper
-        ObjectMapper mapper = new ObjectMapper();
-        // Read JSON file
-        JsonNode rootNode = null;
-        try {
-            rootNode = mapper.readTree(new File(ConfigData.JSON_CONFIG_FILE_PATH));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    /**
+     * Hàm nội bộ để tải file JSON nếu chưa được tải
+     */
+    private static void loadJsonConfig() {
+        if (rootNode == null) {
+            try {
+                rootNode = mapper.readTree(new File(JSON_CONFIG_FILE_PATH));
+                System.out.println("✅ Đã tải file cấu hình JSON vào bộ nhớ.");
+            } catch (IOException e) {
+                throw new RuntimeException("Lỗi nghiêm trọng: Không thể đọc file JSON tại " + JSON_CONFIG_FILE_PATH, e);
+            }
         }
+    }
 
-        String result = rootNode
-                .path("platforms")
+    /**
+     * Hàm lấy giá trị String
+     */
+    public static String getValueJsonConfig(String platform, String device, String propertyName) {
+        loadJsonConfig();
+        JsonNode node = rootNode.path("platforms")
                 .path(platform.trim().toLowerCase())
                 .path("devices")
                 .path(device.trim().toLowerCase())
-                .path(propertyName)
-                .asText();
+                .path(propertyName);
 
-        System.out.println("***" + propertyName + ": " + result);
+        String result = node.asText("");
+        System.out.println("*** " + propertyName + ": " + result);
         return result;
     }
 
+    /**
+     * Hàm lấy giá trị Boolean
+     */
+    public static boolean getBooleanValueJsonConfig(String platform, String device, String propertyName) {
+        loadJsonConfig();
+        JsonNode node = rootNode.path("platforms")
+                .path(platform.trim().toLowerCase())
+                .path("devices")
+                .path(device.trim().toLowerCase())
+                .path(propertyName);
+
+        if (node.isMissingNode()) {
+            return false;
+        }
+        boolean result = node.asBoolean();
+        System.out.println("*** " + propertyName + ": " + result);
+        return result;
+    }
 }

@@ -18,17 +18,6 @@ import java.time.Duration;
 /**
  * BaseTest cho Mobile Web Browser testing
  * Sử dụng cho Mobile Web (Chrome, Safari mobile)
- *
- * Ví dụ sử dụng:
- * <pre>
- * public class MyWebTest extends BaseTestMobileWeb {
- *     @Test
- *     public void testWebFeature() {
- *         BrowserUI.navigateToUrl("https://example.com");
- *         BrowserUI.clickElement(By.id("button"));
- *     }
- * }
- * </pre>
  */
 public class BaseTestMobileWeb {
 
@@ -73,7 +62,6 @@ public class BaseTestMobileWeb {
 
         // Tự động setup ChromeDriver nếu được bật trong config và sử dụng Chrome browser
         // Với Appium mobile web, ChromeDriver thường được Appium tự động quản lý
-        // Nhưng setup trước sẽ đảm bảo driver đã sẵn sàng
         if (browser == BrowserType.CHROME && platform == Platform.ANDROID) {
             boolean autoSetup = ConfigData.AUTO_SETUP_CHROMEDRIVER != null &&
                     ConfigData.AUTO_SETUP_CHROMEDRIVER.trim().equalsIgnoreCase("true");

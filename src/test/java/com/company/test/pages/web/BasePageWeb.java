@@ -11,26 +11,6 @@ import java.time.Duration;
 /**
  * BasePage cho Mobile Web Browser
  * Sử dụng cho Mobile Web pages
- *
- * Ví dụ:
- * <pre>
- * public class LoginPageWeb extends BasePageWeb {
- *     @FindBy(id = "username")
- *     private WebElement usernameField;
- *
- *     @FindBy(id = "password")
- *     private WebElement passwordField;
- *
- *     @FindBy(id = "loginButton")
- *     private WebElement loginButton;
- *
- *     public void login(String username, String password) {
- *         usernameField.sendKeys(username);
- *         passwordField.sendKeys(password);
- *         loginButton.click();
- *     }
- * }
- * </pre>
  */
 public class BasePageWeb {
 
