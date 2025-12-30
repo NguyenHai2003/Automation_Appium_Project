@@ -102,6 +102,60 @@ public class DriverFactory {
     }
 
     /**
+     * Tạo driver cho Flutter App
+     */
+    public static AppiumDriver createFlutterDriver(
+            Platform platform,
+            String host,
+            String port,
+            String platformVersion,
+            String deviceName,
+            String udid,
+            String appPackage,
+            String appActivity,
+            String appPath,
+            boolean noReset,
+            boolean fullReset,
+            boolean autoGrantPermissions,
+            String systemPort,
+            String wdaLocalPort,
+            String bundleId) {
+
+        LogUtils.info("🔧 Đang tạo Flutter Driver cho platform: " + platform.getValue());
+
+        try {
+            URL serverUrl = new URL("http://" + host + ":" + port);
+
+            if (platform == Platform.ANDROID) {
+                var options = DriverOptionsFactory.createAndroidFlutterOptions(
+                        platformVersion, deviceName, udid,
+                        appPackage, appActivity, appPath,
+                        noReset, fullReset, autoGrantPermissions, systemPort);
+
+                AndroidDriver driver = new AndroidDriver(serverUrl, options);
+                LogUtils.info("✅ Android Flutter Driver đã được tạo thành công");
+                return driver;
+
+            } else if (platform == Platform.IOS) {
+                var options = DriverOptionsFactory.createIOSFlutterOptions(
+                        platformVersion, deviceName, udid,
+                        bundleId, appPath, noReset, fullReset, wdaLocalPort);
+
+                IOSDriver driver = new IOSDriver(serverUrl, options);
+                LogUtils.info("✅ iOS Flutter Driver đã được tạo thành công");
+                return driver;
+
+            } else {
+                throw new IllegalArgumentException("Platform không được hỗ trợ cho Flutter: " + platform);
+            }
+
+        } catch (MalformedURLException e) {
+            LogUtils.error("❌ Lỗi URL không hợp lệ: " + e.getMessage());
+            throw new RuntimeException("Không thể tạo Flutter driver do URL không hợp lệ", e);
+        }
+    }
+
+    /**
      * Tạo driver cho Mobile Web Browser
      */
     public static AppiumDriver createMobileWebDriver(
@@ -180,6 +234,14 @@ public class DriverFactory {
                 return createMobileWebDriver(platform, browserType, host, port,
                         config.platformVersion, config.deviceName, config.udid,
                         config.systemPort, config.wdaLocalPort);
+
+            case FLUTTER:
+                return createFlutterDriver(platform, host, port,
+                        config.platformVersion, config.deviceName, config.udid,
+                        config.appPackage, config.appActivity, config.appPath,
+                        config.noReset, config.fullReset,
+                        config.autoGrantPermissions, config.systemPort,
+                        config.wdaLocalPort, config.bundleId);
 
             default:
                 throw new IllegalArgumentException("AppType không được hỗ trợ: " + appType);

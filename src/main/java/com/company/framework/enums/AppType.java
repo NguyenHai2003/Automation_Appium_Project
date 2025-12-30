@@ -19,7 +19,12 @@ public enum AppType {
     /**
      * Mobile Web - Ứng dụng web chạy trên mobile browser
      */
-    MOBILE_WEB("MobileWeb");
+    MOBILE_WEB("MobileWeb"),
+
+    /**
+     * Flutter App - Ứng dụng Flutter (hỗ trợ cả Android và iOS)
+     */
+    FLUTTER("Flutter");
 
     private final String value;
 

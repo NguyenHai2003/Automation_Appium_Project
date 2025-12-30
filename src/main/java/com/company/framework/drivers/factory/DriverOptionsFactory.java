@@ -52,6 +52,8 @@ public class DriverOptionsFactory {
         options.setNoReset(noReset);
         options.setFullReset(fullReset);
 
+        // Note: autoGrantPermissions is handled via capabilities if needed
+        // UiAutomator2Options doesn't have setAutoGrantPermissionsEnabled method
         if (autoGrantPermissions) {
             options.setCapability("autoGrantPermissions", true);
         }
@@ -161,6 +163,102 @@ public class DriverOptionsFactory {
         } else {
             options.withBrowserName("Safari");
         }
+
+        if (wdaLocalPort != null && !wdaLocalPort.isEmpty()) {
+            options.setWdaLocalPort(Integer.parseInt(wdaLocalPort));
+        }
+
+        return options;
+    }
+
+    /**
+     * Tạo UiAutomator2Options cho Android Flutter App
+     * Flutter apps sử dụng automationName="Flutter" (cần cài Flutter driver plugin)
+     */
+    public static UiAutomator2Options createAndroidFlutterOptions(
+            String platformVersion,
+            String deviceName,
+            String udid,
+            String appPackage,
+            String appActivity,
+            String appPath,
+            boolean noReset,
+            boolean fullReset,
+            boolean autoGrantPermissions,
+            String systemPort) {
+
+        UiAutomator2Options options = new UiAutomator2Options();
+        options.setPlatformName(Platform.ANDROID.getValue());
+        options.setPlatformVersion(platformVersion);
+        options.setDeviceName(deviceName);
+
+        if (udid != null && !udid.isEmpty()) {
+            options.setUdid(udid);
+        }
+
+        if (appPackage != null && !appPackage.isEmpty()) {
+            options.setAppPackage(appPackage);
+        }
+
+        if (appActivity != null && !appActivity.isEmpty()) {
+            options.setAppActivity(appActivity);
+        }
+
+        if (appPath != null && !appPath.isEmpty()) {
+            options.setApp(appPath);
+        }
+
+        // Flutter apps sử dụng automationName="Flutter"
+        options.setAutomationName("Flutter");
+        options.setNoReset(noReset);
+        options.setFullReset(fullReset);
+
+        if (autoGrantPermissions) {
+            options.setCapability("autoGrantPermissions", true);
+        }
+
+        if (systemPort != null && !systemPort.isEmpty()) {
+            options.setSystemPort(Integer.parseInt(systemPort));
+        }
+
+        return options;
+    }
+
+    /**
+     * Tạo XCUITestOptions cho iOS Flutter App
+     * Flutter apps sử dụng automationName="Flutter" (cần cài Flutter driver plugin)
+     */
+    public static XCUITestOptions createIOSFlutterOptions(
+            String platformVersion,
+            String deviceName,
+            String udid,
+            String bundleId,
+            String appPath,
+            boolean noReset,
+            boolean fullReset,
+            String wdaLocalPort) {
+
+        XCUITestOptions options = new XCUITestOptions();
+        options.setPlatformName(Platform.IOS.getValue());
+        options.setPlatformVersion(platformVersion);
+        options.setDeviceName(deviceName);
+
+        if (udid != null && !udid.isEmpty()) {
+            options.setUdid(udid);
+        }
+
+        if (bundleId != null && !bundleId.isEmpty()) {
+            options.setBundleId(bundleId);
+        }
+
+        if (appPath != null && !appPath.isEmpty()) {
+            options.setApp(appPath);
+        }
+
+        // Flutter apps sử dụng automationName="Flutter"
+        options.setAutomationName("Flutter");
+        options.setNoReset(noReset);
+        options.setFullReset(fullReset);
 
         if (wdaLocalPort != null && !wdaLocalPort.isEmpty()) {
             options.setWdaLocalPort(Integer.parseInt(wdaLocalPort));
